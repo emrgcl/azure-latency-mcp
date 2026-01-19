@@ -1,0 +1,32 @@
+# Azure Region Advisor - Dependencies
+# Install with: pip install -r requirements.txt
+
+# =============================================================================
+# MCP Server Dependencies
+# =============================================================================
+
+# MCP Framework
+mcp>=1.0.0
+
+# Azure SDK for latency testing
+azure-identity>=1.15.0
+azure-mgmt-resource>=23.0.0
+azure-mgmt-storage>=21.0.0
+azure-mgmt-subscription>=3.0.0
+
+# Data validation
+pydantic>=2.0.0
+
+# =============================================================================
+# Pricing Skill Dependencies
+# =============================================================================
+
+# HTTP requests for Azure Retail Prices API
+requests>=2.28.0
+
+# =============================================================================
+# Development Dependencies (optional)
+# =============================================================================
+# Uncomment if needed for development/testing
+# pytest>=7.0.0
+# pytest-asyncio>=0.21.0
