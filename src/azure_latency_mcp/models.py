@@ -54,20 +54,6 @@ class CreatedStorageAccount:
 
 
 @dataclass
-class CleanupRequired:
-    """Information about resources that need manual cleanup."""
-    resource_group: str
-    accounts: list[str] = field(default_factory=list)
-
-    def to_dict(self) -> dict:
-        """Convert to dictionary for JSON serialization."""
-        return {
-            "resource_group": self.resource_group,
-            "accounts": self.accounts,
-        }
-
-
-@dataclass
 class SubscriptionInfo:
     """Azure subscription information."""
     id: str
@@ -142,32 +128,61 @@ def build_latency_response(
     deleted_accounts: list[str],
     failed_deletions: list[dict],
     warnings: list[str],
-    cleanup_required: Optional[CleanupRequired],
     duration_seconds: float,
     log_file: str,
     cancelled: bool = False,
 ) -> dict:
-    """Build the flat response structure for test_latency tool."""
+    """Build the two-part response structure for test_latency tool (Option E)."""
     
+    # Determine best region from results
     best_region = results[0].region if results else None
     best_latency_ms = results[0].avg_ms if results else None
     
+    # Determine infrastructure status
+    if not created_accounts:
+        infra_status = "No temporary resources needed - used existing endpoints"
+    elif failed_deletions:
+        infra_status = "Cleanup incomplete - manual action required"
+    else:
+        infra_status = "All resources cleaned up successfully"
+    
+    # Determine if action is required and build action message
+    action_required = len(failed_deletions) > 0
+    action_message = None
+    if action_required:
+        failed_names = [fd["account"] for fd in failed_deletions]
+        if len(failed_names) == 1:
+            action_message = f"Please manually delete storage account '{failed_names[0]}' in resource group '{resource_group}' or delete the entire resource group"
+        else:
+            action_message = f"Please manually delete storage accounts {failed_names} in resource group '{resource_group}' or delete the entire resource group"
+    
     response = {
+        # Top-level metadata
         "success": success,
-        "best_region": best_region,
-        "best_latency_ms": best_latency_ms,
-        "results": [r.to_dict() for r in results],
-        "regions_tested": len(results),
-        "resource_group": resource_group,
-        "subscription_id": subscription_id,
-        "created_accounts": created_accounts,
-        "deleted_accounts": deleted_accounts,
-        "failed_deletions": failed_deletions,
-        "warnings": warnings,
-        "cleanup_required": cleanup_required.to_dict() if cleanup_required else None,
+        "cancelled": cancelled,
         "duration_seconds": round(duration_seconds, 2),
         "log_file": log_file,
-        "cancelled": cancelled,
+        "warnings": warnings,
+        
+        # Latency results section
+        "latency_results": {
+            "best_region": best_region,
+            "best_latency_ms": best_latency_ms,
+            "regions_tested": len(results),
+            "results": [r.to_dict() for r in results],
+        },
+        
+        # Infrastructure operations section
+        "infrastructure": {
+            "status": infra_status,
+            "subscription_id": subscription_id,
+            "resource_group": resource_group,
+            "created_accounts": created_accounts,
+            "deleted_accounts": deleted_accounts,
+            "failed_deletions": failed_deletions,
+            "action_required": action_required,
+            "action_message": action_message,
+        },
     }
     
     return response

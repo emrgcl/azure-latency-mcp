@@ -226,7 +226,6 @@ async def azure_test_latency(
 
             # Build response
             duration = time.time() - start_time
-            cleanup_required = tester.get_cleanup_required()
 
             response = build_latency_response(
                 success=True,
@@ -237,7 +236,6 @@ async def azure_test_latency(
                 deleted_accounts=tester.deleted_accounts,
                 failed_deletions=tester.failed_deletions,
                 warnings=tester.warnings,
-                cleanup_required=cleanup_required,
                 duration_seconds=duration,
                 log_file=actual_log_file,
                 cancelled=cancel_token.is_cancelled(),
