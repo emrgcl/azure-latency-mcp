@@ -30,7 +30,6 @@ from azure.core.exceptions import AzureError
 from .models import (
     LatencyResult,
     CreatedStorageAccount,
-    CleanupRequired,
     SubscriptionInfo,
 )
 
@@ -478,15 +477,6 @@ class AzureLatencyTester:
 
         self._report_progress(4, 4, "Cleanup complete", 100)
 
-    def get_cleanup_required(self) -> Optional[CleanupRequired]:
-        """Get cleanup required info if there are failed deletions."""
-        if self.failed_deletions:
-            return CleanupRequired(
-                resource_group=self.resource_group_name,
-                accounts=[fd["account"] for fd in self.failed_deletions],
-            )
-        return None
-
     def run(self) -> list[LatencyResult]:
         """Execute the full latency test workflow."""
         start_time = time.time()
@@ -527,13 +517,23 @@ def list_azure_subscriptions() -> list[SubscriptionInfo]:
         sub_client = SubscriptionClient(credential)
         subscriptions = list(sub_client.subscriptions.list())
 
-        return [
-            SubscriptionInfo(
+        result = []
+        for s in subscriptions:
+            # Handle state - could be enum, string, or None
+            if s.state is None:
+                state = "Unknown"
+            elif isinstance(s.state, str):
+                state = s.state
+            else:
+                # It's an enum, get the value
+                state = s.state.value if hasattr(s.state, 'value') else str(s.state)
+            
+            result.append(SubscriptionInfo(
                 id=s.subscription_id,
                 name=s.display_name,
-                state=s.state.value if s.state else "Unknown",
-            )
-            for s in subscriptions
-        ]
+                state=state,
+            ))
+        
+        return result
     except Exception as e:
         raise RuntimeError(f"Failed to list Azure subscriptions: {e}")

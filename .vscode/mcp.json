@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "azure-latency": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "azure_latency_mcp.server"]
+    }
+  }
+}

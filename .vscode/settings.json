@@ -1,0 +1,20 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python c:\\\\Temp\\\\azure-latency-mcp\\\\\\.claude\\\\skills\\\\azure-pricing\\\\scripts\\\\query_vm_pricing\\.py --sku Standard_D48as_v6 --regions northeurope,westeurope,uksouth,ukwest,swedencentral,swedensouth,germanywestcentral,francecentral,francesouth,norwayeast,norwaywest,polandcentral,italynorth,spaincentral,switzerlandnorth,switzerlandwest,belgiumcentral,austriaeast$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python c:\\\\Temp\\\\azure-latency-mcp\\\\\\.claude\\\\skills\\\\azure-pricing\\\\scripts\\\\query_vm_pricing\\.py --sku Standard_D8as_v5 --currency USD$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python scripts\\\\query_vm_pricing\\.py --sku Standard_D8as_v5$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python \"c:\\\\Temp\\\\azure-latency-mcp\\\\\\.claude\\\\skills\\\\azure-pricing\\\\scripts\\\\query_vm_pricing\\.py\" --sku Standard_D8as_v5$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
