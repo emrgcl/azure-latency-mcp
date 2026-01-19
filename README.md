@@ -51,66 +51,15 @@ cd azure-region-advisor
 # Install dependencies
 pip install -r requirements.txt
 
-# Or install as a package with uv (recommended)
-uv pip install -e .
-
 # Authenticate with Azure
 az login
-```
 
-### Verify Installation
-
-```bash
-# Test the pricing skill
-python .claude/skills/azure-pricing/scripts/query_vm_pricing.py --sku Standard_D8as_v6
-
-# Test the MCP server
-python -m azure_latency_mcp.server
-```
-
-## Configuration
-
-### VS Code + GitHub Copilot
-
-The repository includes pre-configured VS Code settings. After cloning:
-
-1. Open the repository folder in VS Code
-2. The MCP server configuration is in `.vscode/mcp.json`
-3. Copilot instructions are in `.github/copilot-instructions.md`
-4. The Claude skill is automatically available in `.claude/skills/azure-pricing/`
-
-**MCP Server Configuration** (`.vscode/mcp.json`):
-```json
-{
-  "servers": {
-    "azure-latency": {
-      "type": "stdio",
-      "command": "python",
-      "args": ["-m", "azure_latency_mcp.server"]
-    }
-  }
-}
-```
-
-### Claude Desktop
-
-Add to your Claude Desktop configuration:
-
-**Linux/Mac:** `~/.config/claude/claude_desktop_config.json`  
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "azure-latency": {
-      "command": "uv",
-      "args": ["run", "--with", "azure-latency-mcp", "azure-latency-mcp"]
-    }
-  }
-}
+# You are done! start the VSCODE insider, enable Github Copilot agent and start chatting:)
 ```
 
 ## Usage
+
+Everything is preconfigured once you installed requirements and enabled copilot for VSCode Insider you are good to go!
 
 ### Recommended: AI-Assisted Region Selection
 
@@ -170,6 +119,48 @@ Ask your AI assistant:
 Or use the MCP Inspector:
 ```bash
 npx @modelcontextprotocol/inspector python -m azure_latency_mcp.server
+```
+
+## Configuration
+
+### VS Code + GitHub Copilot
+
+The repository includes pre-configured VS Code settings. After cloning:
+
+1. Open the repository folder in VS Code
+2. The MCP server configuration is in `.vscode/mcp.json`
+3. Copilot instructions are in `.github/copilot-instructions.md`
+4. The Claude skill is automatically available in `.claude/skills/azure-pricing/`
+
+**MCP Server Configuration** (`.vscode/mcp.json`):
+```json
+{
+  "servers": {
+    "azure-latency": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "azure_latency_mcp.server"]
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+Add to your Claude Desktop configuration:
+
+**Linux/Mac:** `~/.config/claude/claude_desktop_config.json`  
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "azure-latency": {
+      "command": "uv",
+      "args": ["run", "--with", "azure-latency-mcp", "azure-latency-mcp"]
+    }
+  }
+}
 ```
 
 ## MCP Tools Reference
